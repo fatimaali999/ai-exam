@@ -40,21 +40,9 @@ def generate_questions():
             f"Student Notes:\n{student_notes}"
         )
         
-        # Call the available Gemini model with fallback chain
-        response = None
-        try:
-            model = genai.GenerativeModel('gemini-1.5-pro')
-            response = model.generate_content(prompt)
-        except:
-            try:
-                model = genai.GenerativeModel('gemini-pro')
-                response = model.generate_content(prompt)
-            except:
-                try:
-                    model = genai.GenerativeModel('gemini-1.5-flash')
-                    response = model.generate_content(prompt)
-                except Exception as e:
-                    raise Exception(f"All Gemini models failed: {str(e)}")
+        # Use the stable gemini-2.5-flash model available on free tier
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(prompt)
         
         return jsonify({
             "success": True,
@@ -92,21 +80,9 @@ def grade_answer():
             f'{{"score": 85, "explanation": "Your explanation goes here"}}'
         )
         
-        # Grading model with fallback chain
-        response = None
-        try:
-            model = genai.GenerativeModel('gemini-1.5-pro')
-            response = model.generate_content(prompt)
-        except:
-            try:
-                model = genai.GenerativeModel('gemini-pro')
-                response = model.generate_content(prompt)
-            except:
-                try:
-                    model = genai.GenerativeModel('gemini-1.5-flash')
-                    response = model.generate_content(prompt)
-                except Exception as e:
-                    raise Exception(f"All Gemini models failed: {str(e)}")
+        # Use the stable gemini-2.5-flash model available on free tier
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(prompt)
         
         return jsonify({
             "success": True,
