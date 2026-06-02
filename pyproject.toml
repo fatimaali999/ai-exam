@@ -13,4 +13,4 @@ dependencies = [
 ]
 
 [tool.vercel]
-entrypoint = "vss/api/index.py:app"
+entrypoint = "vss.api.index:app"
