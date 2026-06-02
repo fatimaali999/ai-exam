@@ -1,0 +1,8 @@
+uv.lock
+*.lock
+.git
+__pycache__
+*.pyc
+.env
+.env.local
+node_modules

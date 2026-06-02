@@ -1,5 +1,15 @@
 {
-  "buildCommand": "pip install -r requirements.txt",
+  "buildCommand": "pip install --upgrade pip && pip install -r requirements.txt",
+  "builds": [
+    {
+      "src": "vss/api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb",
+        "runtime": "python3.12"
+      }
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
