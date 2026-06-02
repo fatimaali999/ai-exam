@@ -51,3 +51,42 @@ def generate_questions():
         
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/grade-answer', methods=['POST', 'GET'])
+@app.route('/grade-answer', methods=['POST', 'GET'])
+def grade_answer():
+    try:
+        if not os.environ.get("GEMINI_API_KEY"):
+            return jsonify({"success": False, "error": "API Key configuration missing"}), 500
+            
+        # Handle both GET and POST requests
+        if request.method == 'GET':
+            question = request.args.get('question', '')
+            student_answer = request.args.get('answer', '')
+        else:
+            data = request.get_json() or {}
+            question = data.get('question', '')
+            student_answer = data.get('answer', '')
+        
+        # Grading prompt design template
+        prompt = (
+            f"You are an academic assessor grading an exam question.\n"
+            f"Question: {question}\n"
+            f"Student's Answer: {student_answer}\n\n"
+            f"Tasks:\n"
+            f"1. Score the answer out of 100 points.\n"
+            f"2. Provide a 2-3 sentence candid explanation detailing what critical data points were missing or correct.\n\n"
+            f"Response format constraint: Return your response ONLY as a valid JSON object matching this structure:\n"
+            f'{{"score": 85, "explanation": "Your explanation goes here"}}'
+        )
+        
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(prompt)
+        
+        return jsonify({
+            "success": True,
+            "evaluation": response.text
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
