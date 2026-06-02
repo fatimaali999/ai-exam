@@ -1,16 +1,5 @@
 {
   "buildCommand": "pip install --no-cache-dir -r requirements.txt",
-  "builds": [
-    {
-      "src": "vss/api/index.py",
-      "use": "@vercel/python@3.12",
-      "config": {
-        "maxLambdaSize": "50mb",
-        "runtime": "python3.12",
-        "pythonVersion": "3.12"
-      }
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
