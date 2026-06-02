@@ -40,8 +40,12 @@ def generate_questions():
             f"Student Notes:\n{student_notes}"
         )
         
-        # Call the classic serverless-stable model wrapper
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Call the available Gemini model
+        try:
+            model = genai.GenerativeModel('gemini-1.5-pro')
+        except:
+            # Fallback to gemini-pro if 1.5-pro is not available
+            model = genai.GenerativeModel('gemini-pro')
         response = model.generate_content(prompt)
         
         return jsonify({
@@ -80,8 +84,13 @@ def grade_answer():
             f'{{"score": 85, "explanation": "Your explanation goes here"}}'
         )
         
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
+        model = genai.GenerativeModel('gemini-1.5-pro')
+        try:
+            response = model.generate_content(prompt)
+        except:
+            # Fallback to gemini-pro if 1.5-pro is not available
+            model = genai.GenerativeModel('gemini-pro')
+            response = model.generate_content(prompt)
         
         return jsonify({
             "success": True,
