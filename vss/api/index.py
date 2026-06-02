@@ -11,7 +11,12 @@ api_key = os.environ.get("GEMINI_API_KEY")
 if api_key:
     genai.configure(api_key=api_key)
 
+@app.route('/', methods=['GET'])
+def health():
+    return jsonify({"status": "ok", "message": "AI Exam API is running"}), 200
+
 @app.route('/api/generate-questions', methods=['POST'])
+@app.route('/generate-questions', methods=['POST'])
 def generate_questions():
     try:
         # Check if the API key was correctly injected in the environment settings
