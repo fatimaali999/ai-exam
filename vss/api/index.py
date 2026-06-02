@@ -15,17 +15,21 @@ if api_key:
 def health():
     return jsonify({"status": "ok", "message": "AI Exam API is running"}), 200
 
-@app.route('/api/generate-questions', methods=['POST'])
-@app.route('/generate-questions', methods=['POST'])
+@app.route('/api/generate-questions', methods=['POST', 'GET'])
+@app.route('/generate-questions', methods=['POST', 'GET'])
 def generate_questions():
     try:
         # Check if the API key was correctly injected in the environment settings
         if not os.environ.get("GEMINI_API_KEY"):
             return jsonify({"success": False, "error": "API Key is missing in Vercel settings"}), 500
-            
-        # Safely parse incoming payload data sent from your React app
-        data = request.get_json() or {}
-        student_notes = data.get('notes', 'No study notes provided.')
+        
+        # Handle both GET and POST requests
+        if request.method == 'GET':
+            student_notes = request.args.get('notes', 'No study notes provided.')
+        else:
+            # Safely parse incoming payload data sent from your React app
+            data = request.get_json() or {}
+            student_notes = data.get('notes', 'No study notes provided.')
         
         prompt = (
             f"You are an expert academic examiner. Read the following student study notes carefully. "
