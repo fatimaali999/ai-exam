@@ -18,25 +18,23 @@ const UploadPage = () => {
     setError("");
     
     try {
-      // 1. Point this fetch directly to your live backend domain link
-      const response = await fetch("https://ai-exam-tawny.vercel.app/api/generate-questions", {
+      // FIX: Changed from absolute web link to standard relative API cloud path routing
+      const response = await fetch("/api/generate-questions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // 2. Package your textarea or parsed PDF string inside the notes payload variable
         body: JSON.stringify({ notes: notesText }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        // 3. Parse the structural string array returned from the Gemini Engine
         try {
           const completeExamQuestions = JSON.parse(data.questions);
           console.log("Your 10 Exam Questions are ready:", completeExamQuestions);
           
-          // NEXT ROUTING ACTION: Pass this array to your state / route to your ExamPage.jsx
+          // Route right into your interactive exam interface page view container
           navigate('/exam', { state: { questions: completeExamQuestions } });
         } catch (parseError) {
           setError("Error parsing questions from AI. Please try again.");
