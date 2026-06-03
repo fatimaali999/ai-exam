@@ -3,6 +3,7 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
+import psycopg2
 
 app = Flask(__name__)
 CORS(app)
@@ -95,6 +96,42 @@ def grade_answer():
         if raw_text.endswith("```"):
             raw_text = raw_text.rsplit("\n", 1)[0]
         cleaned_text = raw_text.strip()
+        
+        # --- DATABASE INTERACTION LAYER ---
+        try:
+            # Extract the score safely from Gemini's JSON response
+            evaluation_data = json.loads(cleaned_text)
+            final_score = int(evaluation_data.get("score", 0))
+            
+            # Connect to Vercel Postgres using the environment variable automatically provided
+            postgres_url = os.environ.get('POSTGRES_URL') or os.environ.get('DATABASE_URL')
+            if postgres_url:
+                conn = psycopg2.connect(postgres_url)
+                cursor = conn.cursor()
+                
+                # Create the history table seamlessly if it hasn't been created yet
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS exam_history (
+                        id SERIAL PRIMARY KEY,
+                        score INTEGER,
+                        date_taken TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                ''')
+                
+                # Insert the numeric score safely to avoid security vulnerabilities
+                cursor.execute(
+                    "INSERT INTO exam_history (score) VALUES (%s);", 
+                    (final_score,)
+                )
+                
+                conn.commit()
+                cursor.close()
+                conn.close()
+        except Exception as db_err:
+            # If the database fails for any reason, print the error but DO NOT crash the app,
+            # ensuring the student still gets their grade on screen.
+            print("Database tracking error logged:", str(db_err))
+        # ----------------------------------
         
         return jsonify({
             "success": True,
