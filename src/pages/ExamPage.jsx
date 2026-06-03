@@ -41,7 +41,7 @@ const ExamPage = () => {
     setError("");
 
     try {
-      const response = await fetch("https://ai-exam-tawny.vercel.app/api/grade-answer", {
+      const response = await fetch("https://ai-exam-tawny.vercel.app/api/grade-answer/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

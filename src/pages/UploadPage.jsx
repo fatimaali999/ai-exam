@@ -19,7 +19,7 @@ const UploadPage = () => {
     
     try {
       // FIX: Changed from absolute web link to standard relative API cloud path routing
-      const response = await fetch("/api/generate-questions", {
+      const response = await fetch("/api/generate-questions/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

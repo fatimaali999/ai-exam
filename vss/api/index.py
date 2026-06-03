@@ -17,7 +17,7 @@ if api_key:
 def home():
     return jsonify({"status": "ok", "message": "AI Exam API is running"}), 200
 
-@app.route('/api/generate-questions', methods=['POST'])
+@app.route('/api/generate-questions/', methods=['POST'])
 def generate_questions():
     try:
         if not os.environ.get("GEMINI_API_KEY"):
@@ -65,7 +65,7 @@ def generate_questions():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-@app.route('/api/grade-answer', methods=['POST'])
+@app.route('/api/grade-answer/', methods=['POST'])
 def grade_answer():
     try:
         if not os.environ.get("GEMINI_API_KEY"):
